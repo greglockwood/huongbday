@@ -22,6 +22,7 @@ function Word({ text, mouse, onErase }) {
   }
   const target = useRef(null);
   const [pressedTime, setPressedTime] = useState(0);
+  const [erased, setErased] = useState(false);
   const rect = target.current?.getBoundingClientRect();
   const isDown = REQUIRE_PRESS ? mouse.isDown : true;
   const isOver = !rect
@@ -37,17 +38,18 @@ function Word({ text, mouse, onErase }) {
 
   useEffect(() => {
     let handle = requestAnimationFrame(() => {
-      if (pressedTime && isDown && isOver) {
+      if (pressedTime && isDown && isOver && !erased) {
         const duration = Math.min(ERASE_DURATION, Date.now() - pressedTime);
         const eraseProgress = duration / ERASE_DURATION;
         const fadeNodes = Array.from(target.current.querySelectorAll('.fade'));
         fadeNodes.forEach(node => node.style.opacity = 1 - eraseProgress);
         const erasableCharCount = fadeNodes.map(n => n.textContent).join('').replace(/\W/g, '').length;
         onErase(getId(target, text), eraseProgress * erasableCharCount);
+        if (eraseProgress === 1) setErased(true);
       }
     });
     return () => cancelAnimationFrame(handle);
-  }, [isDown, isOver, pressedTime]);
+  }, [isDown, isOver, pressedTime, erased]);
 
   const parts = text.split(/\*/g).filter(Boolean).map((part, idx) => {
     // console.log(`Word.map(${part}, ${idx})`);
