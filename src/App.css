@@ -11,6 +11,8 @@ html, body, #root, .App {
   background-color: #282c34;
   display: flex;
   flex-flow: column nowrap;
+  align-items: center;
+  align-content: stretch;
 }
 
 .start {
