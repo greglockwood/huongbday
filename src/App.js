@@ -35,11 +35,9 @@ on the essentials.
   const erasedCharMap = useRef({});
   const onErase = useCallback((id, chars) => {
     if (!id || chars == null) return;
-    // console.log(`onErase(${id}, ${chars}), erasedCharMap`, erasedCharMap.current);
     erasedCharMap.current[id] = chars;
     const totalErasedChars = [...Object.values(erasedCharMap.current)].reduce((sum, count) => sum + count, 0);
     const progress = totalErasedChars / totalCharsToErase;
-    // console.log(`Erase progress: ${Math.floor(progress * 100)}%`);
     setEraseProgress(progress);
   }, [totalCharsToErase]);
 
@@ -53,7 +51,7 @@ on the essentials.
     if (started) return;
     setStarted(true);
     document.documentElement.requestFullscreen({navigationUI: 'hide'});
-  }, []);
+  }, [started]);
 
   const content = started ? <>
     <ProgressBox progress={eraseProgress}/>

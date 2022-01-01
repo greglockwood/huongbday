@@ -9,23 +9,27 @@ function Audio({ mouse, debug }) {
   const wasPlaying = prevState.current.playing;
   const isDown = mouse.isDown;
 
-  useEffect(async () => {
-    if (isDown && !wasPlaying) {
-      prevState.current.playing = true;
-      try {
-        await sound.current.play();
-      } catch (ex) {
-        console.error('Error when playing:', ex);
+  useEffect(() => {
+    const sndRef = sound.current;
+    (async () => {
+      if (isDown && !wasPlaying) {
+        prevState.current.playing = true;
+        try {
+          await sndRef.play();
+        } catch (ex) {
+          console.error('Error when playing:', ex);
+        }
+      } else if (!isDown && wasPlaying) {
+        prevState.current.playing = false;
+        try {
+          await sndRef.pause();
+        } catch (ex) {
+          console.error('Error when pausing:', ex);
+        }
       }
-    } else if (!isDown && wasPlaying) {
-      prevState.current.playing = false;
-      try {
-        await sound.current.pause();
-      } catch (ex) {
-        console.error('Error when pausing:', ex);
-      }
-    }
-  }, [isDown]);
+    })();
+    return () => sndRef?.stop();
+  }, [isDown, wasPlaying]);
 
   return <audio src={SCRATCH_AUDIO_URL} ref={sound} autoPlay={false} preload={'auto'} loop controls={debug} />
 }
