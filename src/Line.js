@@ -1,30 +1,58 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-function Word({ text }) {
+const ERASE_DURATION = 1000;
+const REQUIRE_PRESS = false;
+
+function Word({ text, mouse }) {
   // console.log(`Word: text=${text}`)
   const isBlank = text === '[blank]';
   if (isBlank) {
     text = ' ';
   }
+  const target = useRef(null);
+  const [pressedTime, setPressedTime] = useState(0);
+  const rect = target.current?.getBoundingClientRect();
+  const isDown = REQUIRE_PRESS ? mouse.isDown : true;
+  const isOver = !rect
+    ? false
+    : mouse.clientX >= rect.left &&
+    mouse.clientX <= rect.right &&
+    mouse.clientY >= rect.top &&
+    mouse.clientY <= rect.bottom;
+  if (isDown && isOver && !pressedTime) {
+    console.log('Setting pressed time to now');
+    setPressedTime(Date.now());
+  }
+
+  useEffect(() => {
+    let handle = requestAnimationFrame(() => {
+      if (pressedTime && isDown && isOver) {
+        const duration = Math.min(ERASE_DURATION, Date.now() - pressedTime);
+        const eraseProgress = duration / ERASE_DURATION;
+        Array.from(target.current.querySelectorAll('.fade')).forEach(node => node.style.opacity = 1 - eraseProgress);
+      }
+    });
+    return () => cancelAnimationFrame(handle);
+  }, [isDown, isOver, pressedTime]);
 
   const parts = text.split(/\*/g).filter(Boolean).map((part, idx) => {
-    console.log(`Word.map(${part}, ${idx})`);
+    // console.log(`Word.map(${part}, ${idx})`);
     const partStartIdx = text.indexOf(part);
     const isAKeeper = text[partStartIdx - 1] === '*' && text[partStartIdx + part.length] === '*';
     return <span className={isAKeeper ? 'keep' : 'fade'} key={idx}>{part}</span>;
   });
 
-  return <span className={['word', isBlank ? 'blank' : null].filter(Boolean).join(' ')}>{parts}</span>;
+  return <span ref={target} className={['word', isBlank ? 'blank' : null].filter(Boolean).join(' ')}>{parts}</span>;
 }
 
-function Line({ text, className }) {
+function Line({ text, className, mouse }) {
   const elementRef = useRef();
 
   const words = text.split(/\s+/g);
 
   return (
     <div className={['line', className].filter(Boolean).join(' ')} ref={elementRef}>
-      {words.map((w, i) => <Word text={w} key={i} />)}
+      {words.map((w, i) => <Word text={w} key={i} mouse={mouse} />)}
     </div>
   )
 }

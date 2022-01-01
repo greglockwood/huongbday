@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import useMouse from '@react-hook/mouse-position';
 
 import Line from './Line';
 import './App.css';
@@ -15,6 +16,8 @@ function App() {
       headerText = 'Your present is that we can...';
       break;
   }
+  const target = useRef(null);
+  const mouse = useMouse(target);
 
   const lines = `
 Happy birthday!
@@ -30,10 +33,10 @@ I decided to eliminate most of
 the cruft and just focus
 on the essentials.
   `.split(/\n/g).map(l => l.trim()).filter(Boolean).map((line, idx) => {
-    return <Line text={line} key={idx} className={idx === 0 ? 'space-around' : null}/>;
+    return <Line text={line} key={idx} className={idx === 0 ? 'space-around' : null} mouse={mouse}/>;
   });
   return (
-    <div className={`App step-${step}`}>
+    <div className={`App step-${step}`} ref={target}>
       <header className="App-header">{headerText}</header>
       <div className="App-content">
         {lines}
