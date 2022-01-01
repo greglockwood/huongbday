@@ -102,15 +102,6 @@
   }
 }
 
-/*.word span {*/
-/*  transition: opacity 3s cubic-bezier(0.87, 0, 0.13, 1);*/
-/*  opacity: 1;*/
-/*}*/
-
-/*.App.step-1 .word .fade {*/
-/*  opacity: 0;*/
-/*}*/
-
 .App-content {
   background-color: #282c34;
   min-height: 100vh;
@@ -138,6 +129,7 @@
 
 .App-footer {
   bottom: 5vh;
+  padding: 0 5vw;
 }
 
 @media (orientation: landscape) {

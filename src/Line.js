@@ -1,11 +1,22 @@
 import { useEffect, useRef, useState } from 'react';
 
+import { BLANK_LINE } from './constants';
+
 const ERASE_DURATION = 1000;
 const REQUIRE_PRESS = false;
 
-function Word({ text, mouse }) {
+let idMap = new Map();
+let id = 0;
+const getId = (node, text) => {
+  if (idMap.has(node)) return idMap.get(node);
+  const nextId = `${id++}__${text}`;
+  idMap.set(node, nextId);
+  return nextId;
+};
+
+function Word({ text, mouse, onErase }) {
   // console.log(`Word: text=${text}`)
-  const isBlank = text === '[blank]';
+  const isBlank = text === BLANK_LINE;
   if (isBlank) {
     text = ' ';
   }
@@ -29,7 +40,10 @@ function Word({ text, mouse }) {
       if (pressedTime && isDown && isOver) {
         const duration = Math.min(ERASE_DURATION, Date.now() - pressedTime);
         const eraseProgress = duration / ERASE_DURATION;
-        Array.from(target.current.querySelectorAll('.fade')).forEach(node => node.style.opacity = 1 - eraseProgress);
+        const fadeNodes = Array.from(target.current.querySelectorAll('.fade'));
+        fadeNodes.forEach(node => node.style.opacity = 1 - eraseProgress);
+        const erasableCharCount = fadeNodes.map(n => n.textContent).join('').replace(/\W/g, '').length;
+        onErase(getId(target, text), eraseProgress * erasableCharCount);
       }
     });
     return () => cancelAnimationFrame(handle);
@@ -45,14 +59,14 @@ function Word({ text, mouse }) {
   return <span ref={target} className={['word', isBlank ? 'blank' : null].filter(Boolean).join(' ')}>{parts}</span>;
 }
 
-function Line({ text, className, mouse }) {
+function Line({ text, className, mouse, onErase }) {
   const elementRef = useRef();
 
   const words = text.split(/\s+/g);
 
   return (
     <div className={['line', className].filter(Boolean).join(' ')} ref={elementRef}>
-      {words.map((w, i) => <Word text={w} key={i} mouse={mouse} />)}
+      {words.map((w, i) => <Word text={w} key={i} mouse={mouse} onErase={onErase} />)}
     </div>
   )
 }
