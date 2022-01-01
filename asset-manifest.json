@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/huongbday/static/css/main.91c92524.css",
+    "main.js": "/huongbday/static/js/main.28b714ef.js",
+    "static/js/787.86895ee5.chunk.js": "/huongbday/static/js/787.86895ee5.chunk.js",
+    "index.html": "/huongbday/index.html",
+    "main.91c92524.css.map": "/huongbday/static/css/main.91c92524.css.map",
+    "main.28b714ef.js.map": "/huongbday/static/js/main.28b714ef.js.map",
+    "787.86895ee5.chunk.js.map": "/huongbday/static/js/787.86895ee5.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.91c92524.css",
+    "static/js/main.28b714ef.js"
+  ]
+}
