@@ -28,7 +28,6 @@ function Audio({ mouse, debug }) {
         }
       }
     })();
-    return () => sndRef?.stop();
   }, [isDown, wasPlaying]);
 
   return <audio src={SCRATCH_AUDIO_URL} ref={sound} autoPlay={false} preload={'auto'} loop controls={debug} />
