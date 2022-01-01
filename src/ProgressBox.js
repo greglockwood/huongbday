@@ -9,7 +9,7 @@ function ProgressBox({progress}) {
       strokeDashoffset: borderLen - offsetToSet,
       strokeDasharray: `${borderLen},${borderLen}`,
     };
-  }, [borderLen, progress]);
+  }, [borderLen, offsetToSet]);
   return <svg viewBox='0 0 510 510' preserveAspectRatio='none'>
     <path d='M5,5 505,5 505,505 5,505 5,2.5' ref={pathRef} style={pathStyle} />
   </svg>;

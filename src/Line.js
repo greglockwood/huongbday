@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 
 import { BLANK_LINE } from './constants';
 
-const ERASE_DURATION = 1000;
-const REQUIRE_PRESS = false;
+const ERASE_DURATION_PER_CHAR = 200;
+const REQUIRE_PRESS = true;
 
 let idMap = new Map();
 let id = 0;
@@ -32,24 +32,27 @@ function Word({ text, mouse, onErase }) {
     mouse.clientY >= rect.top &&
     mouse.clientY <= rect.bottom;
   if (isDown && isOver && !pressedTime) {
-    console.log('Setting pressed time to now');
+    // console.log('Setting pressed time to now');
     setPressedTime(Date.now());
+  } else if (!isDown && isOver && pressedTime) {
+    setPressedTime(0);
   }
 
   useEffect(() => {
     let handle = requestAnimationFrame(() => {
       if (pressedTime && isDown && isOver && !erased) {
-        const duration = Math.min(ERASE_DURATION, Date.now() - pressedTime);
-        const eraseProgress = duration / ERASE_DURATION;
         const fadeNodes = Array.from(target.current.querySelectorAll('.fade'));
-        fadeNodes.forEach(node => node.style.opacity = 1 - eraseProgress);
         const erasableCharCount = fadeNodes.map(n => n.textContent).join('').replace(/\W/g, '').length;
+        let eraseDuration = ERASE_DURATION_PER_CHAR * erasableCharCount;
+        const duration = Math.min(eraseDuration, Date.now() - pressedTime);
+        const eraseProgress = duration / eraseDuration;
+        fadeNodes.forEach(node => node.style.opacity = 1 - eraseProgress);
         onErase(getId(target, text), eraseProgress * erasableCharCount);
         if (eraseProgress === 1) setErased(true);
       }
     });
     return () => cancelAnimationFrame(handle);
-  }, [isDown, isOver, pressedTime, erased]);
+  }, [isDown, isOver, pressedTime, erased, onErase, text]);
 
   const parts = text.split(/\*/g).filter(Boolean).map((part, idx) => {
     // console.log(`Word.map(${part}, ${idx})`);

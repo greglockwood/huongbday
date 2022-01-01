@@ -39,7 +39,7 @@ on the essentials.
     const progress = totalErasedChars / totalCharsToErase;
     // console.log(`Erase progress: ${Math.floor(progress * 100)}%`);
     setEraseProgress(progress);
-  }, [allText]);
+  }, [totalCharsToErase]);
 
   let headerText = eraseProgress === 0 ? 'To my beautiful wife,' : 'Your present is that we will...';
 
