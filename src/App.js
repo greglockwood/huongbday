@@ -29,16 +29,18 @@ as I am prone to do
 I decided to eliminate most of
 the cruft and just focus
 on the essentials.
-  `.split(/\n/g).filter(Boolean).map((line, idx) => {
+  `.split(/\n/g).map(l => l.trim()).filter(Boolean).map((line, idx) => {
     return <Line text={line} key={idx} className={idx === 0 ? 'space-around' : null}/>;
   });
   return (
-    <div className={`App step-${step}`} onClick={() => setStep((step + 1) % numSteps)}>
+    <div className={`App step-${step}`}>
       <header className="App-header">{headerText}</header>
       <div className="App-content">
         {lines}
       </div>
-      { step < numSteps - 1 ? <footer className="App-footer">Tap to reveal your present</footer> : null }
+      { step < numSteps - 1
+        ? <footer className="App-footer" onClick={() => setStep((step + 1) % numSteps)}>Tap to eliminate the cruft</footer>
+        : null }
     </div>
   );
 }
