@@ -64,13 +64,13 @@ on the essentials.
   </div>;
 
   return (
-    <div className={`App`} ref={target}>
+    <div className={`App ${eraseProgress >= 1 ? 'done' : ''}`} ref={target}>
       <Audio mouse={mouse} debug={false}/>
       <header className="App-header">{headerText}</header>
       <div className="App-content">
         {content}
       </div>
-      {started ? <Footer progress={eraseProgress}/> : null}
+      {started ? <Footer progress={eraseProgress} /> : null}
     </div>
   );
 }
