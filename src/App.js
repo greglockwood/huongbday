@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import useMouse from '@react-hook/mouse-position';
 
+import Audio from './Audio';
 import Line from './Line';
 import ProgressBox from './ProgressBox';
 import Footer from './Footer';
@@ -30,6 +31,7 @@ on the essentials.
   const totalCharsToErase = totalAlphaChars - keepCharCount;
 
   const [eraseProgress, setEraseProgress] = useState(0);
+  const [started, setStarted] = useState(false);
   const erasedCharMap = useRef({});
   const onErase = useCallback((id, chars) => {
     if (!id || chars == null) return;
@@ -47,14 +49,28 @@ on the essentials.
     return <Line text={line} key={idx} className={idx === 0 ? 'space-around' : null} mouse={mouse} onErase={onErase}/>;
   });
 
+  const start = useCallback(() => {
+    if (started) return;
+    setStarted(true);
+    document.documentElement.requestFullscreen({navigationUI: 'hide'});
+  }, []);
+
+  const content = started ? <>
+    <ProgressBox progress={eraseProgress}/>
+    {lines}
+  </> : <div className={'start-info'}>
+    <p>Welcome to your birthday experience.</p>
+    <button onClick={start} className={'start'}>Get the Party Started</button>
+  </div>;
+
   return (
     <div className={`App`} ref={target}>
+      <Audio mouse={mouse} debug={false}/>
       <header className="App-header">{headerText}</header>
       <div className="App-content">
-        <ProgressBox progress={eraseProgress} />
-        {lines}
+        {content}
       </div>
-      <Footer progress={eraseProgress} />
+      {started ? <Footer progress={eraseProgress}/> : null}
     </div>
   );
 }
