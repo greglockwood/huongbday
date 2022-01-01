@@ -36,7 +36,7 @@
   font-size: calc(10px + 2vmin);
   color: white;
 
-  padding: 10vh 10vw;
+  padding: 10vh 15vw;
 }
 
 .App-header, .App-footer {
@@ -53,4 +53,13 @@
 
 .App-footer {
   bottom: 5vh;
+}
+
+@media (orientation: landscape) {
+  .App-content {
+    padding: 10vh 30vw;
+  }
+  .App-header {
+    top: 2vh;
+  }
 }
