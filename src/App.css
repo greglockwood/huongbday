@@ -13,6 +13,8 @@ html, body, #root, .App {
   flex-flow: column nowrap;
   align-items: center;
   align-content: stretch;
+
+  touch-action: none;
 }
 
 .start {
