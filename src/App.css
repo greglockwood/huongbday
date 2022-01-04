@@ -139,6 +139,8 @@ html, body, #root, .App {
 
   margin: 8vh 15vw;
   padding: 2vh;
+
+  user-select: none;
 }
 
 .App-content svg {
